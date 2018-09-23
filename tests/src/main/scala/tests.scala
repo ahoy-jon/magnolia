@@ -20,7 +20,7 @@ import contextual.data.scalac._
 import contextual.data.fqt._
 import contextual.data.txt._
 import magnolia.examples._
-import magnolia.TypeName
+import magnolia.{CaseClass, Magnolia, TypeName}
 
 import scala.annotation.StaticAnnotation
 import scala.util.control.NonFatal
@@ -106,9 +106,16 @@ sealed abstract class Halfy
 final case class Lefty() extends Halfy
 final case class Righty() extends Halfy
 
+
+
+
+
 object Tests extends TestApp {
 
   def tests(): Unit = for (_ <- 1 to 1) {
+
+
+
     test("construct a Show product instance with alternative apply functions") {
       Show.gen[Test].show(Test("a", "b"))
     }.assert(_ == """Test(param=Param(a=a,b=b))""")

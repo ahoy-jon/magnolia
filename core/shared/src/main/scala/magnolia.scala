@@ -435,6 +435,12 @@ object Magnolia {
     }
 
     val genericType: Type = weakTypeOf[T]
+
+  //   q"..$defMods def $name[..$tparams](...$paramss): $rTpe = $implBlock"  = c.enclosingImpl
+
+
+    val endType = c.macroApplication.asInstanceOf[c.universe.TypeApply].tpe
+
     val searchType = appliedType(typeConstructor, genericType)
     val directlyReentrant = stack.top.exists(_.searchType =:= searchType)
     if (directlyReentrant) throw DirectlyReentrantException()
@@ -453,9 +459,11 @@ object Magnolia {
       if (stack.nonEmpty) result
       else for (tree <- result) yield c.untypecheck(expandDeferred.transform(tree))
 
-    dereferencedResult.getOrElse {
+    val last = dereferencedResult.getOrElse {
       error(s"magnolia: could not infer $prefixName.Typeclass for type $genericType")
     }
+
+    q"$last.asInstanceOf[$endType]"
   }
 
   /** constructs a new [[Subtype]] instance
